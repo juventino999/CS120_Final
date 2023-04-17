@@ -6,7 +6,7 @@ Created on Fri Apr 14 10:33:28 2023
 #import numpy as np
 import pandas as pd
 import csv
-""" Open CSV file and save contents to a list of lists """
+""" Open CSV file and save contents to a list of lists. First row must be variables. """
 def open_csv(filename):
 #    with open(filename, mode='r') as file:
     return(pd.read_csv(filename))
@@ -14,23 +14,39 @@ def open_csv(filename):
 """ Delete a list of specific variables (columns) """
 def delete_var(file, varlist): # Nick
     try: 
-        file.drop(varlist, axis = 1)
+        file = file.drop(varlist, axis = 1)
+        return(file)
     except: 
         raise_gui_error("Variables not found")
 
 """ Delete observation (row) by index number list. """
 def delete_obs(file, obslist): # Nick
     try: 
-        file.drop(obslist, axis = 0)
+        file = file.drop(obslist, axis = 0)
+        return(file)
     except: 
         raise_gui_error("Observation not found")    
 
-""" Delete observation (row). Search all obs within given var and drop if they match """
-def delete_obs_by_var(file, obs, var):
-    obslist = []
-    for 
-    delete_obs(file, obslist)
-    pass
+""" Delete observation (row). Search all obs within given var and drop if they match.
+If multi = 0, search thru one variable and delete all instances. If multi = 1, search list
+of variables and argument list of obs must match (match by index) """
+def delete_obs_by_var(file, obs, var, multi=0): # Nick. Multi needs to be looked over and probably fixed, untested
+    if multi == 0:
+        obslist = []
+        for index, contents in file.iterrows():
+            if obs in contents[var]:
+                obslist.append(index)
+        file = delete_obs(file, obslist)
+        return(file)
+    if multi == 1: # use re to make set of obs that contain obs in each var. Compare all sets and pass overlap to delete_obs as list
+        obslist = {}
+        for i in range(len(var)): # for each variable in varlist, as index
+            obslist[i] = set() # create set that is {index}obslist
+            for index, contents in file.iterrows(): # basically run multi == 0, add each obs to set from above
+                if obs in contents[var[i]]:
+                    obslist[i] += index
+        # find the overlap of all sets, pass that as list to delete_obs()
+        
 
 """ Split file by observation. Take a variable to look under and a list of 
 observations, and move all rows containing the observations in the list to a new file. 
@@ -58,7 +74,14 @@ def sort(file, sortby): #Zhangir
     pass
 
 def raise_gui_error():
+    print('error')
+    
+def save_df_to_csv(df, target_filename):
     pass
 
 if __name__ == '__main__': # does not execute this part if importing from another file
     test = open_csv("gradebook.csv")
+    print(test)
+    print()
+    test = delete_obs_by_var(test, 'nick')
+    print(test)
