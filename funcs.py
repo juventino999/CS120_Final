@@ -37,7 +37,7 @@ def delete_obs_by_var(file, obs, var): # Nick.
     return(file)
 
 """take a dictionary {variable name:variable value} and delete observations that match given values"""
-def delete_obs_by_var_multi(file, var_obs):
+def delete_obs_by_var_multi(file, var_obs): # Nick
     indices = {}
     for variable, value in var_obs.items(): 
         index = list(np.where(file[variable] == value))
@@ -79,7 +79,7 @@ def raise_gui_error():
     print('error')
     
 def save_df_to_csv(df, target_filename):
-    pass
+    return(df.to_csv(target_filename))
 
 if __name__ == '__main__': # does not execute this part if importing from another file
     test = open_csv("test.csv")
@@ -87,4 +87,5 @@ if __name__ == '__main__': # does not execute this part if importing from anothe
     print()
     print(delete_obs_by_var(test, 'alpha', 'name'))
     print()
-    print(delete_obs_by_var_multi(test, {'id':1, 'name':'alpha', 'location':'worc'}))
+    test = (delete_obs_by_var_multi(test, {'id':1, 'name':'alpha', 'location':'worc'}))
+    save_df_to_csv(test, "saved_test.csv")
