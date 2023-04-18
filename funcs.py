@@ -5,9 +5,9 @@ Created on Fri Apr 14 10:33:28 2023
 """
 #import numpy as np
 import pandas as pd
-import csv
+import numpy as np
 """ Open CSV file and save contents to a list of lists. First row must be variables. """
-def open_csv(filename):
+def open_csv(filename): # Nick
 #    with open(filename, mode='r') as file:
     return(pd.read_csv(filename))
 
@@ -27,27 +27,29 @@ def delete_obs(file, obslist): # Nick
     except: 
         raise_gui_error("Observation not found")    
 
-""" Delete observation (row). Search all obs within given var and drop if they match.
-If multi = 0, search thru one variable and delete all instances. If multi = 1, search list
-of variables and argument list of obs must match (match by index) """
-def delete_obs_by_var(file, obs, var, multi=0): # Nick. Multi needs to be looked over and probably fixed, untested
-    if multi == 0:
-        obslist = []
-        for index, contents in file.iterrows():
-            if obs in contents[var]:
-                obslist.append(index)
-        file = delete_obs(file, obslist)
-        return(file)
-    if multi == 1: # use re to make set of obs that contain obs in each var. Compare all sets and pass overlap to delete_obs as list
-        obslist = {}
-        for i in range(len(var)): # for each variable in varlist, as index
-            obslist[i] = set() # create set that is {index}obslist
-            for index, contents in file.iterrows(): # basically run multi == 0, add each obs to set from above
-                if obs in contents[var[i]]:
-                    obslist[i] += index
-        # find the overlap of all sets, pass that as list to delete_obs()
-        
+""" Delete observation (row). Search all obs within given var and drop if they match. search thru one variable and delete all instances """
+def delete_obs_by_var(file, obs, var): # Nick. 
+    obslist = []
+    for index, contents in file.iterrows():
+        if obs in contents[var]:
+            obslist.append(index)
+    file = delete_obs(file, obslist)
+    return(file)
 
+"""take a dictionary {variable name:variable value} and delete observations that match given values"""
+def delete_obs_by_var_multi(file, var_obs):
+    indices = {}
+    for variable, value in var_obs.items(): 
+        index = list(np.where(file[variable] == value))
+        indices[variable] = (set(index[0]))
+    # for loop thru dictionary, find intersect of each value set
+    inter = list(indices.values())[0]
+    for value in indices.values():
+        inter = inter.intersection(value)
+    file = delete_obs(file, inter)
+    return(file)
+
+        
 """ Split file by observation. Take a variable to look under and a list of 
 observations, and move all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found. """
@@ -80,8 +82,9 @@ def save_df_to_csv(df, target_filename):
     pass
 
 if __name__ == '__main__': # does not execute this part if importing from another file
-    test = open_csv("gradebook.csv")
+    test = open_csv("test.csv")
     print(test)
     print()
-    test = delete_obs_by_var(test, 'nick')
-    print(test)
+    print(delete_obs_by_var(test, 'alpha', 'name'))
+    print()
+    print(delete_obs_by_var_multi(test, {'id':1, 'name':'alpha', 'location':'worc'}))
