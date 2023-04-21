@@ -6,7 +6,11 @@ Created on Fri Apr 14 10:33:28 2023
 #import numpy as np
 import pandas as pd
 import numpy as np
-""" Open CSV file and save contents to a list of lists. First row must be variables. """
+
+""" Change to class structure instead? Would probably be easier, can update with methods instead of having to call functions
+#class Sheet(): # change out filename for self and make them all methods"""
+
+""" Open CSV file and save contents to a dataframe. First row must be variables. """
 def open_csv(filename): # Nick
 #    with open(filename, mode='r') as file:
     return(pd.read_csv(filename))
@@ -36,7 +40,8 @@ def delete_obs_by_var(file, obs, var): # Nick.
     file = delete_obs(file, obslist)
     return(file)
 
-"""take a dictionary {variable name:variable value} and delete observations that match given values"""
+"""take a dictionary {variable name:variable value} and delete observations that match given values. No limit to dictionary argument length."""
+"""Can probably use this as a base for keep by multi var """
 def delete_obs_by_var_multi(file, var_obs): # Nick
     indices = {}
     for variable, value in var_obs.items(): 
@@ -79,7 +84,10 @@ def raise_gui_error():
     print('error')
     
 def save_df_to_csv(df, target_filename):
-    return(df.to_csv(target_filename))
+    return(df.to_csv(target_filename, index = False))
+
+def rename_var(file):
+    pass
 
 if __name__ == '__main__': # does not execute this part if importing from another file
     test = open_csv("test.csv")
@@ -88,4 +96,4 @@ if __name__ == '__main__': # does not execute this part if importing from anothe
     print(delete_obs_by_var(test, 'alpha', 'name'))
     print()
     test = (delete_obs_by_var_multi(test, {'id':1, 'name':'alpha', 'location':'worc'}))
-    save_df_to_csv(test, "saved_test.csv")
+    save_df_to_csv(test, "saved_test1.csv")
