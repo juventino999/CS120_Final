@@ -69,16 +69,52 @@ def split_var(file, target_filename, varlist, copylist=[]): # Nick
 """ Append a list of observations from csv to an existing file, target_filename"""
 def append(file, target_filename, obs): #Zhangir
 
+    with open(target_filename, 'a', newline='') as f:
+     writer = csv.writer(f)
+     for row in obs:
+        writer.writerow(row)
+
     pass
 
 """ Delete duplicate observations. Select whether complete duplicates should be
 removed, or if observations with duplicated list of var values should be removed. 
 Make sure to keep the original. """
-def delete_duplicates(file, perfect_duplicates, var=[], obs=[]): #Zhangir
+
+def delete_duplicates(file):
+    unique_rows = []
+    with open(file, 'r') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        unique_rows.append(header)
+        for row in reader:
+            is_duplicate = False
+            for prev_row in unique_rows:
+                if row == prev_row:
+                    is_duplicate = True
+                    break
+                elif row[0] == prev_row[0]:
+                    is_duplicate = True
+                    unique_rows.remove(prev_row)
+                    break
+            if not is_duplicate:
+                unique_rows.append(row)
+
+    with open('{}_unique.csv'.format(file.split('.csv')[0]), 'w', newline='') as f:
+        writer = csv.writer(f)
+        for row in unique_rows:
+            writer.writerow(row)
     pass
 
-def sort(file, sortby): #Zhangir
-    pass
+def sort_csv(file, sort_column):
+    with open(file, 'r') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        rows = list(reader)
+    sorted_rows = sorted(rows, key=lambda x: x[sort_column])
+    sorted_rows.insert(0, header)
+    with open(file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(sorted_rows)
 
 def raise_gui_error():
     print('error')
