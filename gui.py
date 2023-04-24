@@ -8,6 +8,7 @@ Created on Wed Apr 19 11:29:30 2023
 import csv
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+import funcs
 
 class Window():
 
@@ -20,10 +21,10 @@ class Window():
         self.window.geometry('800x800')
         
         # Set up window grid
-        self.window.rowconfigure(0, weight=20)
+        self.window.rowconfigure(0, weight=5)
         self.window.rowconfigure(1, weight=1)
         self.window.rowconfigure(2, weight=5)
-        self.window.columnconfigure(0, weight=5) 
+        self.window.columnconfigure(0, weight=1) 
         self.window.columnconfigure(1, weight=20)
         self.window.columnconfigure(2, weight=1)
 
@@ -48,12 +49,18 @@ class Window():
         
     ###
         # Define what to show on the right (the game - top)
-        frame_game = Frame(self.window, bg="SILVER")
-        frame_game.grid(row=0, column=1, rowspan=3, sticky='WENS')
+        frame_csv = Frame(self.window, bg="SILVER")
+        frame_csv.grid(row=0, column=1, rowspan=3, sticky='WENS')
 
-        self.output_txt = Label(frame_game, bg="SILVER")
-        self.output_txt.place(relx=0.5, rely=0.5, anchor='center')
-        self.update_display()
+        scroll = Scrollbar(frame_csv)
+        scroll.pack(side = RIGHT, fill = Y)
+
+        self.output_txt = Label(frame_csv, bg="SILVER")
+        self.output_txt.place(relx=.5, rely=1, anchor='center')
+        self.refresh(funcs.open_csv("saved_test_long.csv"))
+        
+        
+
 
         # Define what to show on the right (the input - bottom)
         frame_input = Frame(self.window)
@@ -71,7 +78,7 @@ class Window():
         val_txt = Label(left_boxes, text = "Value").grid(row = 2,column = 0, sticky='W')
         
         # Submit button
-        btn_submit = Button(left_boxes, text="Submit", command=self.add_value).grid(row=4, column=0, sticky='W')
+        #btn_submit = Button(left_boxes, text="Submit", command=self.add_value).grid(row=4, column=0, sticky='W')
 
         # Get user input for row, col and value
         self.row_input = Entry(left_boxes)
@@ -89,4 +96,6 @@ class Window():
         
         # Run the app
         self.window.mainloop()
+    def refresh(self, df):
+        self.output_txt.config(text=df.to_string())
 win = Window()
