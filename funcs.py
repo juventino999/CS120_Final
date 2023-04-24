@@ -6,6 +6,7 @@ Created on Fri Apr 14 10:33:28 2023
 #import numpy as np
 import pandas as pd
 import numpy as np
+import csv
 
 """ Change to class structure instead? Would probably be easier, can update with methods instead of having to call functions
 #class Sheet(): # change out filename for self and make them all methods"""
