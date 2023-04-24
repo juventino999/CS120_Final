@@ -18,18 +18,18 @@ class Sheet:
     def __init__(self, filename):
         self.df = pd.read_csv(filename)
     def __repr__(self):
-        return(self.to_string())
+        return(self.df.to_string())
     def delete_var(self, varlist):
         self.df = self.df.drop(varlist, axis = 1)
-    def delete_obs(self, obslist): # Nick
+    def delete_obs(self, obslist):
         self.df = self.df.drop(obslist, axis = 0)
-    def delete_obs_by_var(self, obs, var): # Nick. 
+    def delete_obs_by_var(self, obs, var): 
         obslist = []
         for index, contents in self.df.iterrows():
             if obs in contents[var]:
                 obslist.append(index)
         self.df = delete_obs(obslist)
-    def delete_obs_by_var_multi(self, var_obs): # Nick
+    def delete_obs_by_var_multi(self, var_obs):
         indices = {}
         for variable, value in var_obs.items(): 
             index = list(np.where(self.df[variable] == value))
@@ -156,10 +156,15 @@ def rename_var(file):
     pass
 
 if __name__ == '__main__': # does not execute this part if importing from another file
-    test = open_csv("test.csv")
-    print(test)
-    print()
-    print(delete_obs_by_var(test, 'alpha', 'name'))
-    print()
-    test = (delete_obs_by_var_multi(test, {'id':1, 'name':'alpha', 'location':'worc'}))
-    save_df_to_csv(test, "saved_test1.csv")
+# =============================================================================
+#     test = open_csv("test.csv")
+#     print(test)
+#     print()
+#     print(delete_obs_by_var(test, 'alpha', 'name'))
+#     print()
+#     test = (delete_obs_by_var_multi(test, {'id':1, 'name':'alpha', 'location':'worc'}))
+#     save_df_to_csv(test, "saved_test1.csv")
+# 
+# =============================================================================
+    activeSheet = Sheet("saved_test_long.csv")
+    print(activeSheet)

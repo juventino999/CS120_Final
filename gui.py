@@ -14,7 +14,8 @@ TO-DO:
 import csv
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-import funcs
+from funcs import Sheet
+import tkinter.scrolledtext as st
 
 class Window():
 
@@ -45,7 +46,7 @@ class Window():
         btn_quit = Button(frame_menu, text="Save CSV")
         btn_quit.grid(row=2, column=0, sticky="WE", padx=5, pady=5)
         
-        btn_quit = Button(frame_menu, text="save CSV")
+        #btn_quit = Button(frame_menu, text="Delete ID", command=lambda: funcs.delete_var("saved_test_long.csv", "id"))
         btn_quit.grid(row=3, column=0, sticky="WE", padx=5, pady=5)
         
         btn_quit = Button(frame_menu, text="save CSV")
@@ -56,14 +57,25 @@ class Window():
         frame_csv = Frame(self.window, bg="SILVER")
         frame_csv.grid(row=0, column=1, rowspan=3, sticky='WENS')
 
-        scroll = Scrollbar(frame_csv)
-        scroll.pack(side = RIGHT, fill = Y)
+# =============================================================================
+#         scroll = Scrollbar(frame_csv)
+#         scroll.pack(side = RIGHT, fill = Y)
+# =============================================================================
 
-        self.output_txt = Label(frame_csv, bg="SILVER")
-        self.output_txt.place(relx=.5, rely=1, anchor='center')
-        self.refresh(funcs.open_csv("saved_test_long.csv"))
+# =============================================================================
+#         self.output_txt = Label(frame_csv, bg="SILVER")
+#         self.output_txt.place(relx=.5, rely=1, anchor='center')
+#         self.refresh(funcs.open_csv("saved_test_long.csv"))
+# =============================================================================
         
-        
+        self.text_area = st.ScrolledText(frame_csv,
+                     width = 30, 
+                     height = 8, 
+                     font = ("Times New Roman",
+                             15))
+        self.text_area.grid(row=0, column = 0, pady = 10, padx = 10)
+
+        self.update_display()
 
 
         # Define what to show on the right (the input - bottom)
@@ -101,5 +113,7 @@ class Window():
         # Run the app
         self.window.mainloop()
     def refresh(self, df):
-        self.output_txt.config(text=df.to_string())
+        self.output_txt.config(text=print(activeSheet))
+    def update_display(self):
+        self.text_area.insert(INSERT, str("1") * 100)
 win = Window()
