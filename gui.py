@@ -4,6 +4,12 @@
 Created on Wed Apr 19 11:29:30 2023
 
 @author: juventino1112
+
+TO-DO:
+    - Configure buttons and add backend commands to them
+    - Get scroll to work
+    - add horizontal scroll bar
+    - Decide what to do with the bottom row
 """
 import csv
 from tkinter import *
@@ -23,10 +29,8 @@ class Window():
         # Set up window grid
         self.window.rowconfigure(0, weight=5)
         self.window.rowconfigure(1, weight=1)
-        self.window.rowconfigure(2, weight=5)
         self.window.columnconfigure(0, weight=1) 
         self.window.columnconfigure(1, weight=20)
-        self.window.columnconfigure(2, weight=1)
 
         # Define what to show on the left (menu)
         frame_menu = Frame(self.window, relief=RAISED, bd=2)
@@ -38,7 +42,7 @@ class Window():
         btn_save = Button(frame_menu, text="Save as CSV")
         btn_save.grid(row=1, column=0, sticky="WE", padx=5, pady=5)
 
-        btn_quit = Button(frame_menu, text="save CSV")
+        btn_quit = Button(frame_menu, text="Save CSV")
         btn_quit.grid(row=2, column=0, sticky="WE", padx=5, pady=5)
         
         btn_quit = Button(frame_menu, text="save CSV")
@@ -64,7 +68,7 @@ class Window():
 
         # Define what to show on the right (the input - bottom)
         frame_input = Frame(self.window)
-        frame_input.grid(row=3,column=1, sticky='WENS')
+        frame_input.grid(row=1,column=1, sticky='WENS')
         frame_input.columnconfigure(0, weight=1)
 
         left_boxes = Frame(frame_input)

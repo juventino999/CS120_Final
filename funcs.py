@@ -2,6 +2,9 @@
 Created on Fri Apr 14 10:33:28 2023
 
 @author: juventino1112
+TO-DO:
+    - Finish missing functions
+    - Change CSV-based to df-based
 """
 #import numpy as np
 import pandas as pd
@@ -11,6 +14,32 @@ import csv
 """ Change to class structure instead? Would probably be easier, can update with methods instead of having to call functions
 #class Sheet(): # change out filename for self and make them all methods"""
 
+class Sheet:
+    def __init__(self, filename):
+        self.df = pd.read_csv(filename)
+    def __repr__(self):
+        return(self.to_string())
+    def delete_var(self, varlist):
+        self.df = self.df.drop(varlist, axis = 1)
+    def delete_obs(self, obslist): # Nick
+        self.df = self.df.drop(obslist, axis = 0)
+    def delete_obs_by_var(self, obs, var): # Nick. 
+        obslist = []
+        for index, contents in self.df.iterrows():
+            if obs in contents[var]:
+                obslist.append(index)
+        self.df = delete_obs(obslist)
+    def delete_obs_by_var_multi(self, var_obs): # Nick
+        indices = {}
+        for variable, value in var_obs.items(): 
+            index = list(np.where(self.df[variable] == value))
+            indices[variable] = (set(index[0]))
+        # for loop thru dictionary, find intersect of each value set
+        inter = list(indices.values())[0]
+        for value in indices.values():
+            inter = inter.intersection(value)
+        self.df.delete_obs(inter)
+    
 """ Open CSV file and save contents to a dataframe. First row must be variables. """
 def open_csv(filename): # Nick
 #    with open(filename, mode='r') as file:
@@ -59,12 +88,12 @@ def delete_obs_by_var_multi(file, var_obs): # Nick
 """ Split file by observation. Take a variable to look under and a list of 
 observations, and move all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found. """
-def split_obs(file, target_filename, target_var, obs): # Nick
+def split_obs(file, target_filename, target_var, obs): # Zhangir
     pass
 
 """ Split file by variable. Take a list of variables and move those variables 
 into a separate CSV file, along with optional other variables  to copy (not move) too.  """
-def split_var(file, target_filename, varlist, copylist=[]): # Nick
+def split_var(file, target_filename, varlist, copylist=[]): # Zhangir
     pass
 
 """ Append a list of observations from csv to an existing file, target_filename"""
