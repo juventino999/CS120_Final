@@ -116,6 +116,18 @@ def split_var(file, target_filename, varlist): #Zhangir
 observations, and move all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found.  """
 def split_obs(file, target_filename, target_var, obs): # Zhangir
+    # Open input file and output file
+    with open(file, 'r') as f_in, open(target_filename, 'w', newline='') as f_out:
+        reader = csv.reader(f_in)
+        writer = csv.writer(f_out)
+        header = next(reader)  # read header
+        target_col = header.index(target_val)  # get index of target variable column
+        writer.writerow([header[0], target_var] + header[1:])  # write header row
+
+        # Loop through rows and write to output file
+        for row in reader:
+            if row[target_col] in obs:
+                writer.writerow([row[0], row[target_col]] + row[1:])
     pass
 
 """ Append a list of observations from csv to an existing file, target_filename"""
