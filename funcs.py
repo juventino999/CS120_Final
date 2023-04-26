@@ -88,7 +88,29 @@ def delete_obs_by_var_multi(file, var_obs): # Nick
 """ Split file by observation. Take a variable to look under and a list of 
 observations, and move all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found. """
-def split_obs(file, target_filename, target_var, obs): # Zhangir
+def split_var(file, target_filename, varlist): #Zhangir
+    # Open the input file for reading
+    with open(file, 'r') as infile:
+        reader = csv.reader(infile)
+        header = next(reader) # Get the header row
+
+        # Get the indices of the variables to move
+        move_indices = [header.index(var) for var in varlist]
+
+        # Open the output file for writing
+        with open(target_filename, 'w', newline='') as outfile:
+            writer = csv.writer(outfile)
+
+            # Write the header row to the output file
+            writer.writerow(header)
+
+            # Loop through the input file
+            for row in reader:
+                # Split the row into the variables to move and the variables to keep
+                move_vars = [row[i] for i in move_indices]
+
+                # Write the ID and variables to move and copy to the output file
+                writer.writerow([row[0]] + move_vars)
     pass
 
 """ Split file by variable. Take a list of variables and move those variables 
