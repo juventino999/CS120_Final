@@ -16,7 +16,10 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from funcs import Sheet
 import tkinter.scrolledtext as st
+import pandas as pd
+from tkinter import ttk
 
+activeSheet = pd.read_csv("saved_test_long.csv")
 class Window():
 
     def __init__(self):
@@ -67,15 +70,36 @@ class Window():
 #         self.output_txt.place(relx=.5, rely=1, anchor='center')
 #         self.refresh(funcs.open_csv("saved_test_long.csv"))
 # =============================================================================
-        
-        self.text_area = st.ScrolledText(frame_csv,
-                     width = 30, 
-                     height = 8, 
-                     font = ("Times New Roman",
-                             15))
-        self.text_area.grid(row=0, column = 0, pady = 10, padx = 10)
+#this is from Chatgpt
+        xscrollbar = ttk.Scrollbar(frame_csv, orient='horizontal')
+        xscrollbar.pack(side='bottom', fill='x')
 
-        self.update_display()
+        # Create a vertical scrollbar and attach it to the frame
+        yscrollbar = ttk.Scrollbar(frame_csv, orient='vertical')
+        yscrollbar.pack(side='right', fill='y')
+        # table
+        table = scrolledtext.ScrolledText(frame, wrap=NONE, xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
+        table.pack(side='left', fill='both', expand=True)
+        
+        xscrollbar.configure(command=table.xview)
+
+        # Configure the vertical scrollbar to work with the table
+        yscrollbar.configure(command=table.yview)
+
+        # Add the dataframe to the table
+        table.insert(END, activeSheet.to_string())
+#End chatgpt"
+
+# ============================================================================= From Catalin
+#         self.text_area = st.ScrolledText(frame_csv,
+#                      width = 30, 
+#                      height = 8, 
+#                      font = ("Times New Roman",
+#                              15))
+#         self.text_area.grid(row=0, column = 0, pady = 10, padx = 10)
+# 
+#         self.update_display()
+# =============================================================================
 
 
         # Define what to show on the right (the input - bottom)
@@ -114,6 +138,7 @@ class Window():
         self.window.mainloop()
     def refresh(self, df):
         self.output_txt.config(text=print(activeSheet))
-    def update_display(self):
-        self.text_area.insert(INSERT, str("1") * 100)
+#Catalin's method
+#    def update_display(self):
+#        self.text_area.insert(INSERT, str("1") * 100000)
 win = Window()
