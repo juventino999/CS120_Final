@@ -85,9 +85,8 @@ def delete_obs_by_var_multi(file, var_obs): # Nick
     return(file)
 
         
-""" Split file by observation. Take a variable to look under and a list of 
-observations, and move all rows containing the observations in the list to a new file. 
-Make sure to avoid crashing the whole program if the obs in list aren't found. """
+""" Split file by variable. Take a list of variables and move those variables 
+into a separate CSV file, along with optional other variables  to copy (not move) too. """
 def split_var(file, target_filename, varlist): #Zhangir
     # Open the input file for reading
     with open(file, 'r') as infile:
@@ -113,9 +112,10 @@ def split_var(file, target_filename, varlist): #Zhangir
                 writer.writerow([row[0]] + move_vars)
     pass
 
-""" Split file by variable. Take a list of variables and move those variables 
-into a separate CSV file, along with optional other variables  to copy (not move) too.  """
-def split_var(file, target_filename, varlist, copylist=[]): # Zhangir
+""" Split file by observation. Take a variable to look under and a list of 
+observations, and move all rows containing the observations in the list to a new file. 
+Make sure to avoid crashing the whole program if the obs in list aren't found.  """
+def split_obs(file, target_filename, target_var, obs): # Zhangir
     pass
 
 """ Append a list of observations from csv to an existing file, target_filename"""
