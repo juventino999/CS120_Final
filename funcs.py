@@ -28,7 +28,7 @@ class Sheet:
         for index, contents in self.df.iterrows():
             if obs in contents[var]:
                 obslist.append(index)
-        self.df = delete_obs(obslist)
+        self.df = self.delete_obs(obslist)
     def delete_obs_by_var_multi(self, var_obs):
         indices = {}
         for variable, value in var_obs.items(): 
@@ -39,54 +39,57 @@ class Sheet:
         for value in indices.values():
             inter = inter.intersection(value)
         self.df.delete_obs(inter)
-    
-""" Open CSV file and save contents to a dataframe. First row must be variables. """
-def open_csv(filename): # Nick
-#    with open(filename, mode='r') as file:
-    return(pd.read_csv(filename))
-
-""" Delete a list of specific variables (columns) """
-def delete_var(file, varlist): # Nick
-    try: 
-        file = file.drop(varlist, axis = 1)
-        return(file)
-    except: 
-        raise_gui_error("Variables not found")
-
-""" Delete observation (row) by index number list. """
-def delete_obs(file, obslist): # Nick
-    try: 
-        file = file.drop(obslist, axis = 0)
-        return(file)
-    except: 
-        raise_gui_error("Observation not found")    
-
-""" Delete observation (row). Search all obs within given var and drop if they match. search thru one variable and delete all instances """
-def delete_obs_by_var(file, obs, var): # Nick. 
-    obslist = []
-    for index, contents in file.iterrows():
-        if obs in contents[var]:
-            obslist.append(index)
-    file = delete_obs(file, obslist)
-    return(file)
-
-"""take a dictionary {variable name:variable value} and delete observations that match given values. No limit to dictionary argument length."""
-"""Can probably use this as a base for keep by multi var """
-def delete_obs_by_var_multi(file, var_obs): # Nick
-    indices = {}
-    for variable, value in var_obs.items(): 
-        index = list(np.where(file[variable] == value))
-        indices[variable] = (set(index[0]))
-    # for loop thru dictionary, find intersect of each value set
-    inter = list(indices.values())[0]
-    for value in indices.values():
-        inter = inter.intersection(value)
-    file = delete_obs(file, inter)
-    return(file)
+# =============================================================================
+#     
+# """ Open CSV file and save contents to a dataframe. First row must be variables. """
+# def open_csv(filename): # Nick
+# #    with open(filename, mode='r') as file:
+#     return(pd.read_csv(filename))
+# 
+# """ Delete a list of specific variables (columns) """
+# def delete_var(file, varlist): # Nick
+#     try: 
+#         file = file.drop(varlist, axis = 1)
+#         return(file)
+#     except: 
+#         raise_gui_error("Variables not found")
+# 
+# """ Delete observation (row) by index number list. """
+# def delete_obs(file, obslist): # Nick
+#     try: 
+#         file = file.drop(obslist, axis = 0)
+#         return(file)
+#     except: 
+#         raise_gui_error("Observation not found")    
+# 
+# """ Delete observation (row). Search all obs within given var and drop if they match. search thru one variable and delete all instances """
+# def delete_obs_by_var(file, obs, var): # Nick. 
+#     obslist = []
+#     for index, contents in file.iterrows():
+#         if obs in contents[var]:
+#             obslist.append(index)
+#     file = delete_obs(file, obslist)
+#     return(file)
+# 
+# """take a dictionary {variable name:variable value} and delete observations that match given values. No limit to dictionary argument length."""
+# """Can probably use this as a base for keep by multi var """
+# def delete_obs_by_var_multi(file, var_obs): # Nick
+#     indices = {}
+#     for variable, value in var_obs.items(): 
+#         index = list(np.where(file[variable] == value))
+#         indices[variable] = (set(index[0]))
+#     # for loop thru dictionary, find intersect of each value set
+#     inter = list(indices.values())[0]
+#     for value in indices.values():
+#         inter = inter.intersection(value)
+#     file = delete_obs(file, inter)
+#     return(file)
+# =============================================================================
 
         
-""" Split file by variable. Take a list of variables and move those variables 
-into a separate CSV file, along with optional other variables  to copy (not move) too. """
+""" Split file by variable. Take a list of variables and copy those variables 
+into a separate CSV file"""
+"""to-do: delete unused variable names, remove row[0] from line 115"""
 def split_var(file, target_filename, varlist): #Zhangir
     # Open the input file for reading
     with open(file, 'r') as infile:
@@ -113,15 +116,16 @@ def split_var(file, target_filename, varlist): #Zhangir
     pass
 
 """ Split file by observation. Take a variable to look under and a list of 
-observations, and move all rows containing the observations in the list to a new file. 
+observations, and copy all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found.  """
+"""to-do: delete duplicate column"""
 def split_obs(file, target_filename, target_var, obs): # Zhangir
     # Open input file and output file
     with open(file, 'r') as f_in, open(target_filename, 'w', newline='') as f_out:
         reader = csv.reader(f_in)
         writer = csv.writer(f_out)
         header = next(reader)  # read header
-        target_col = header.index(target_val)  # get index of target variable column
+        target_col = header.index(target_var)  # get index of target variable column
         writer.writerow([header[0], target_var] + header[1:])  # write header row
 
         # Loop through rows and write to output file
@@ -138,11 +142,9 @@ def append(file, target_filename, obs): #Zhangir
      for row in obs:
         writer.writerow(row)
 
-    pass
 
-""" Delete duplicate observations. Select whether complete duplicates should be
-removed, or if observations with duplicated list of var values should be removed. 
-Make sure to keep the original. """
+
+""" Delete duplicate observations """
 
 def delete_duplicates(file):
     unique_rows = []
@@ -167,8 +169,7 @@ def delete_duplicates(file):
         writer = csv.writer(f)
         for row in unique_rows:
             writer.writerow(row)
-    pass
-
+""" to-do: fix TypeError"""
 def sort_csv(file, sort_column):
     with open(file, 'r') as f:
         reader = csv.reader(f)
@@ -200,5 +201,5 @@ if __name__ == '__main__': # does not execute this part if importing from anothe
 #     save_df_to_csv(test, "saved_test1.csv")
 # 
 # =============================================================================
-    activeSheet = Sheet("saved_test_long.csv")
-    print(activeSheet)
+#   activeSheet = Sheet("saved_test_long.csv")
+    sort_csv("saved_test_long_1.csv", "location")

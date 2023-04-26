@@ -7,10 +7,9 @@ Created on Wed Apr 19 11:29:30 2023
 
 TO-DO:
     - Configure buttons and add backend commands to them
-    - Get scroll to work
-    - add horizontal scroll bar
-    - Decide what to do with the bottom row
+    - on click button, change bottom part to text boxes for that specific function
 """
+# can use askstring for var/obs inputs or can make text boxes below
 import csv
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
@@ -24,7 +23,6 @@ class Window():
 
     def __init__(self):
         
-
         # Set up tkinter
         self.window = Tk()
         self.window.title("CSV Editor")
@@ -40,8 +38,9 @@ class Window():
         frame_menu = Frame(self.window, relief=RAISED, bd=2)
         frame_menu.grid(row=0, column=0, rowspan=1, sticky='WENS')
 
-        btn_open = Button(frame_menu, text="Import CSV")
-        btn_open.grid(row=0, column=0, sticky="WE", padx=5, pady=5)
+# for some reason openfile() runs on startup but not when button is pressed
+        #btn_open = Button(frame_menu, text="Import CSV", command=self.openfile())
+        #btn_open.grid(row=0, column=0, sticky="WE", padx=5, pady=5)
 
         btn_save = Button(frame_menu, text="Save as CSV")
         btn_save.grid(row=1, column=0, sticky="WE", padx=5, pady=5)
@@ -50,15 +49,15 @@ class Window():
         btn_quit.grid(row=2, column=0, sticky="WE", padx=5, pady=5)
         
         #btn_quit = Button(frame_menu, text="Delete ID", command=lambda: funcs.delete_var("saved_test_long.csv", "id"))
-        btn_quit.grid(row=3, column=0, sticky="WE", padx=5, pady=5)
+        #btn_quit.grid(row=3, column=0, sticky="WE", padx=5, pady=5)
         
         btn_quit = Button(frame_menu, text="save CSV")
         btn_quit.grid(row=4, column=0, sticky="WE", padx=5, pady=5)
         
     ###
-        # Define what to show on the right (the game - top)
+        # Define what to show on the right (the dataframe - top)
         frame_csv = Frame(self.window, bg="SILVER")
-        frame_csv.grid(row=0, column=1, rowspan=3, sticky='WENS')
+        frame_csv.grid(row=0, column=1, rowspan=1, sticky='WENS')
 
 # =============================================================================
 #         scroll = Scrollbar(frame_csv)
@@ -78,16 +77,16 @@ class Window():
         yscrollbar = ttk.Scrollbar(frame_csv, orient='vertical')
         yscrollbar.pack(side='right', fill='y')
         # table
-        table = scrolledtext.ScrolledText(frame, wrap=NONE, xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
-        table.pack(side='left', fill='both', expand=True)
+        self.table = st.ScrolledText(frame_csv, wrap=NONE, xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
+        self.table.pack(side='left', fill='both', expand=True)
         
-        xscrollbar.configure(command=table.xview)
+        xscrollbar.configure(command=self.table.xview)
 
         # Configure the vertical scrollbar to work with the table
-        yscrollbar.configure(command=table.yview)
+        yscrollbar.configure(command=self.table.yview)
 
         # Add the dataframe to the table
-        table.insert(END, activeSheet.to_string())
+        self.refresh(activeSheet)
 #End chatgpt"
 
 # ============================================================================= From Catalin
@@ -137,7 +136,12 @@ class Window():
         # Run the app
         self.window.mainloop()
     def refresh(self, df):
-        self.output_txt.config(text=print(activeSheet))
+        self.table.insert(END, df.to_string())
+    """this breaks shit when uncommented"""
+    def openfile(self):
+        self.activeSheet = askopenfilename()
+        #self.refresh(self.activeSheet)
+
 #Catalin's method
 #    def update_display(self):
 #        self.text_area.insert(INSERT, str("1") * 100000)
