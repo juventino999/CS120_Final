@@ -7,3 +7,7 @@ saved_test.csv
 saved_test1.csv
 test.csv
 test.py
+saved_test_long.csv
+*.csv
+funcs_messy.py
+gui_messy.py
