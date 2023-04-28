@@ -17,34 +17,55 @@ import csv
 class Sheet:
     def __init__(self, filename):
         self.df = pd.read_csv(filename)
+        self.df.applymap(str)
+        
     def __repr__(self):
         return(self.df.to_string())
-    def delete_var(self, varlist):
+    
+    def delete_var(self, varlist, obslist=[]): #unused obslist so can use generic button function in GUI. could make it optional here but can't in following func
         self.df = self.df.drop(varlist, axis = 1)
-    def delete_obs(self, obslist):
+        
+    def delete_obs(self, varlist, obslist): #varlist is unused here, just pass an empty list. necessary for button function in GUI
+        #gui program wasn't working w GUI because it was feeding the function strings instead of ints, now convert obslist to ints then run 
+        for i in range(len(obslist)):
+            obslist[i] = int(obslist[i])
         self.df = self.df.drop(obslist, axis = 0)
-    def delete_obs_by_var(self, obs, var): 
+        
+    def delete_obs_by_var(self, var, obs): # inputs in lists must be str
         obs = obs[0] # because obs and var are given as a list, take obs to be first element in the list
         var = var[0]
         obslist = []
-        for index, contents in self.df.iterrows():
-            if obs in contents[var]:
+        for index, contents in self.df.iterrows(): # was previously getting error when contents were int
+            contents = contents[var] # so make contents just the target variable part
+            contents = str(contents) # and make it to a string
+            if obs in contents:
                 obslist.append(index)
-        self.delete_obs(obslist) #this need to be fixed?
-    def delete_obs_by_var_multi(self, varlist, obslist):
+        self.delete_obs([], obslist)
+        
+    def delete_obs_by_var_multi(self, varlist, obslist): # this must use an integer as argument if the df has an integer in it
         # create var_obs dictionary from varlist and obslist 
         var_obs = {}
         for i in range(len(varlist)):
             var_obs[varlist[i]] = obslist[i] 
         indices = {}
-        for variable, value in var_obs.items(): 
-            index = list(np.where(self.df[variable] == value))
-            indices[variable] = (set(index[0]))
+        for variable, value in var_obs.items(): # iteratr thru target variables and variable values
+            try:
+                value = int(value)
+            except:
+                pass
+            variable = str(variable)
+            print(variable, value, type(value))
+            index = list(np.where(self.df[variable] == value)) # index = a list of where the variable == string version of value
+            print(index)
+            indices[variable] = (set(index[0])) # construct a dictionary with the key being the variable and the value being a set containing the list above
         # for loop thru dictionary, find intersect of each value set
         inter = list(indices.values())[0]
         for value in indices.values():
             inter = inter.intersection(value)
-        self.delete_obs(inter)
+        print(inter)
+        inter= list(inter) # turn the set into a list so it can be converted to int in delete_obs()
+        self.delete_obs([], inter)
+        
     def save_df_to_csv(self, target_filename):
         return(self.df.to_csv(target_filename, index = False))
         

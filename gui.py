@@ -24,7 +24,7 @@ import tkinter.scrolledtext as st
 import pandas as pd
 from tkinter import ttk
 
-activeSheet = pd.read_csv("saved_test_long.csv")
+
 class Window():
 
     def __init__(self):
@@ -32,7 +32,7 @@ class Window():
         # Set up tkinter
         self.window = Tk()
         self.window.title("CSV Editor")
-        self.window.geometry('800x800')
+        self.window.geometry('1000x800')
         
         # Set up window grid
         self.window.rowconfigure(0, weight=5)
@@ -43,19 +43,28 @@ class Window():
         # Define what to show on the left (menu)
         frame_menu = Frame(self.window, relief=RAISED, bd=2)
         frame_menu.grid(row=0, column=0, rowspan=1, sticky='WENS')
-
-        btn_open = ttk.Button(frame_menu, text="Import CSV", command=self.openfile) # use lambda if wanting to pass args
+# buttons
+        btn_open = ttk.Button(frame_menu, text="Import CSV", command=self.openfile)
         btn_open.grid(row=0, column=0, sticky="WE", padx=5, pady=5)
 
         btn_save = Button(frame_menu, text="Save as CSV", command=self.saveasfile)
         btn_save.grid(row=1, column=0, sticky="WE", padx=5, pady=5)
 
+        btn_delete_var = Button(frame_menu, text="Delete variable", command=lambda: self.func_button(self.activeSheet.delete_var))
+        btn_delete_var.grid(row=2, column=0, sticky="WE", padx=5, pady=5)
+
+        #btn_delete_obs = Button(frame_menu, text="Delete observation", command=lambda: self.df = self.df.drop(obslist, axis = 0)
+        btn_delete_obs = Button(frame_menu, text="Delete observation", command=self.func_obs)
+        btn_delete_obs.grid(row=3, column=0, sticky="WE", padx=5, pady=5)
+      
+        btn_delete_obs_var = Button(frame_menu, text="Del obs matching var", command=lambda: self.func_button(self.activeSheet.delete_obs_by_var))
+        btn_delete_obs_var.grid(row=4, column=0, sticky="WE", padx=5, pady=5)
         
-        btn_delete_var = Button(frame_menu, text="Delete variable", command=self.delete_var_button)
-        btn_delete_var.grid(row=3, column=0, sticky="WE", padx=5, pady=5)
+        btn_delete_obs_multi = Button(frame_menu, text="Del obs matching multiple vars", command=lambda: self.func_button(self.activeSheet.delete_obs_by_var_multi))
+        btn_delete_obs_multi.grid(row=5, column=0, sticky="WE", padx=5, pady=5)
         
         btn_quit = Button(frame_menu, text="Exit", command=self.program_exit)
-        btn_quit.grid(row=4, column=0, sticky="WE", padx=5, pady=5)
+        btn_quit.grid(row=6, column=0, sticky="WE", padx=5, pady=5)
         
         # Define what to show on the right (the dataframe - top)
         frame_csv = Frame(self.window, bg="SILVER")
@@ -87,18 +96,18 @@ class Window():
         right_boxes = Frame(frame_input)
         right_boxes.grid(row=0, column=1, sticky='NE', padx=5)
 
-        row_txt = Label(left_boxes, text = "Observations").grid(row = 0,column = 0, sticky='W')
-        col_txt = Label(left_boxes, text = "Variables").grid(row = 1,column = 0, sticky='W')
+        row_txt = Label(left_boxes, text = "Variables").grid(row = 0,column = 0, sticky='W')
+        col_txt = Label(left_boxes, text = "Observations").grid(row = 1,column = 0, sticky='W')
         
         # Submit button
         btn_submit = Button(left_boxes, text="Gather arguments", command=self.gather_args).grid(row=4, column=0, sticky='W')
 
         # Get user input for row, col and value
-        self.obs_input = Entry(left_boxes)
-        self.obs_input.grid(row=0, column=1, sticky='W')
-
         self.var_input = Entry(left_boxes)
-        self.var_input.grid(row=1, column=1, sticky='W')
+        self.var_input.grid(row=0, column=1, sticky='W')
+
+        self.obs_input = Entry(left_boxes)
+        self.obs_input.grid(row=1, column=1, sticky='W')
 
         # Display error/success messages
         self.inputtxt = Label(right_boxes, height=5, width=30, bg="WHITE")
@@ -129,17 +138,27 @@ class Window():
     def saveasfile(self):
         target_filename = asksaveasfilename(filetypes=[("CSV", "*.csv")])
         Sheet.save_df_to_csv(self.activeSheet, target_filename)
-    def delete_var_button(self):
-        self.activeSheet.delete_var(self.var_args)
+# =============================================================================
+# no longer used, using self.func_button() instead
+#     def delete_var_button(self):
+#         self.activeSheet.delete_var(self.var_args)
+#         self.refresh(self.activeSheet)
+# =============================================================================
+#generic button function: takes a function from Sheet class, runs it with var_args and obs_args, and then refreshes
+    def func_button(self, function):
+        function(self.var_args, self.obs_args)
         self.refresh(self.activeSheet)
-        
     # take obs and vars as lists. comma with no space as separator
     #to-do: add error processing, spit out an error on inputtxt if the input isnt a var/obs, print "success" if successful
-    def gather_args(self):
+    def gather_args(self): # delete obs by var not working for integer obs
         # Valid input
+        self.obs_args = []
+        self.var_args = []
         try:
-            self.obs_args = self.obs_input.get().split(sep=",")
+            
             self.var_args = self.var_input.get().split(sep=",")
+            self.obs_args = self.obs_input.get().split(sep=",")
+
 # =============================================================================
 #             if:
 #                  self.inputtxt.config(text="Value added successfully.")
@@ -150,8 +169,12 @@ class Window():
         except:
             message = "Invalid input\n"
             self.inputtxt.config(text=message)
+        print(self.obs_args)
+        print(self.var_args)
 
-        
+    def func_obs(self):
+        self.activeSheet.delete_obs([], self.obs_args)
+        self.refresh(self.activeSheet)        
 
 
 win = Window()
