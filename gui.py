@@ -106,7 +106,7 @@ class Window():
         self.obs_input.grid(row=1, column=1, sticky='W')
 
         # Display error/success messages
-        self.inputtxt = Label(right_boxes, height=5, width=30, bg="WHITE")
+        self.inputtxt = Label(right_boxes, height=5, width=50, bg="WHITE")
         self.inputtxt.grid(row=0, column=0, pady=5, sticky='E')
         
         # Run the app
@@ -154,11 +154,11 @@ class Window():
             
             self.var_args = self.var_input.get().split(sep=",")
             self.obs_args = self.obs_input.get().split(sep=",")
-
-        # Invalid input
-        except:
-            message = "Invalid input\n"
+            message = "Vars: " + str(self.var_args) + '\n' + "Obs: " + str(self.obs_args)
             self.inputtxt.config(text=message)
+        # Invalid
+        except:
+            self.inputtxt.config(text="Invalid input")
         print(self.obs_args)
         print(self.var_args)
 

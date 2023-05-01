@@ -8,7 +8,6 @@ TO-DO:
 """
 #import numpy as np
 import pandas as pd
-import numpy as np
 import csv
 
 """ Change to class structure instead? Would probably be easier, can update with methods instead of having to call functions
@@ -17,7 +16,7 @@ import csv
 class Sheet:
     def __init__(self, filename):
         self.df = pd.read_csv(filename)
-        self.df.applymap(str)
+        #self.df.applymap(str) #think this part is unnecessary, have to test further
         
     def __repr__(self):
         return(self.df.to_string())
@@ -168,9 +167,5 @@ def rename_var(file):
     pass
 
 if __name__ == '__main__': # does not execute this part if importing from another file
-    s = Sheet("saved_test.csv")
-    print(s)
-    s.delete_obs_by_var_multi(['name', 'location', 'id'], ['alpha', 'worc', '6'])
-    print()
-    print(s)
+    pass
     
