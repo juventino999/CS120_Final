@@ -11,18 +11,14 @@ Instructions:
     - Click a button to execute a function from funcs.py using the arguments gathered
     - Save the CSV file using the button
 
-TO-DO:
-    - Configure buttons and add backend commands to them
-    - on click button, change bottom part to text boxes for that specific function
 """
-# can use askstring for var/obs inputs or can make text boxes below
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from funcs import Sheet
 import funcs
 import tkinter.scrolledtext as st
-import pandas as pd
 from tkinter import ttk
+import pandas as pd
 
 
 class Window():
@@ -159,12 +155,6 @@ class Window():
             self.var_args = self.var_input.get().split(sep=",")
             self.obs_args = self.obs_input.get().split(sep=",")
 
-# =============================================================================
-#             if:
-#                  self.inputtxt.config(text="Value added successfully.")
-#             else:
-#                 self.inputtxt.config(text="Data violates the rules of sudoku.")
-# =============================================================================
         # Invalid input
         except:
             message = "Invalid input\n"

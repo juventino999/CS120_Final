@@ -44,6 +44,7 @@ class Sheet:
         
     def delete_obs_by_var_multi(self, varlist, obslist): # this must use an integer as argument if the df has an integer in it
         # create var_obs dictionary from varlist and obslist 
+        # current issue: if trying to use this after using delete obs or delete_obs_by_var, won't work. delete obs looks at pandas df index, this just looks at which column it is in existing columns. need to find pandas df index.
         var_obs = {}
         for i in range(len(varlist)):
             var_obs[varlist[i]] = obslist[i] 
@@ -54,15 +55,17 @@ class Sheet:
             except:
                 pass
             variable = str(variable)
-            print(variable, value, type(value))
-            index = list(np.where(self.df[variable] == value)) # index = a list of where the variable == string version of value
-            print(index)
-            indices[variable] = (set(index[0])) # construct a dictionary with the key being the variable and the value being a set containing the list above
+            # old implementation in comment below, new implementation should take care of current issue
+            index = []
+            for ind, row in self.df.iterrows():
+                if row[variable] == value:
+                    index.append(ind)
+            #index = list(np.where(self.df[variable] == value)) # index = a list of where the variable == string version of value. below, set(index) was set(index[0])
+            indices[variable] = (set(index)) # construct a dictionary with the key being the variable and the value being a set containing the list above
         # for loop thru dictionary, find intersect of each value set
         inter = list(indices.values())[0]
         for value in indices.values():
             inter = inter.intersection(value)
-        print(inter)
         inter= list(inter) # turn the set into a list so it can be converted to int in delete_obs()
         self.delete_obs([], inter)
         
@@ -167,7 +170,7 @@ def rename_var(file):
 if __name__ == '__main__': # does not execute this part if importing from another file
     s = Sheet("saved_test.csv")
     print(s)
-    s.delete_obs_by_var_multi(['name', 'location'], ['alpha', 'worc'])
+    s.delete_obs_by_var_multi(['name', 'location', 'id'], ['alpha', 'worc', '6'])
     print()
     print(s)
     
