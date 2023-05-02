@@ -173,7 +173,12 @@ def sort_csv(file, sort_column):
         rows = list(reader)
     # Find the index of the sort column by searching for its name in the header row
     sort_index = header.index(sort_column)
-    sorted_rows = sorted(rows, key=lambda x: x[sort_index])
+    # Try to sort the rows as if the observations in the sort column are integers
+    try:
+        sorted_rows = sorted(rows, key=lambda x: int(x[sort_index]))
+    except ValueError:
+        # If the above fails, sort the rows based on the values as strings
+        sorted_rows = sorted(rows, key=lambda x: str(x[sort_index]))
     sorted_rows.insert(0, header)
     with open(file, 'w', newline='') as f:
         writer = csv.writer(f)
