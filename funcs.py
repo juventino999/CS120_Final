@@ -118,11 +118,25 @@ def split_obs(file, target_filename, target_var, obs): # Zhangir
 
 """ Append a list of observations from csv to an existing file, target_filename"""
 def append(file, target_filename, obs): #Zhangir
-
-    with open(target_filename, 'a', newline='') as f:
-     writer = csv.writer(f)
-     for row in obs:
-        writer.writerow(row)
+    # Open the main file and read the data
+    with open(file, 'r') as main_file:
+        main_reader = csv.reader(main_file)
+        main_data = list(main_reader)
+    
+    # Open the second file and read the data
+    with open(obs, 'r') as obs_file:
+        obs_reader = csv.reader(obs_file)
+        # Skip the header row
+        next(obs_reader)
+        obs_data = list(obs_reader)
+    
+    # Create the new file and write the combined data
+    with open(target_filename, 'w', newline='') as target_file:
+        target_writer = csv.writer(target_file)
+        # Write the data from the main file
+        target_writer.writerows(main_data)
+        # Write the data from the second file
+        target_writer.writerows(obs_data)
 
 
 
