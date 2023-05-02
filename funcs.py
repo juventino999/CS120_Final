@@ -87,8 +87,8 @@ def split_var(file, target_filename, varlist): #Zhangir
         with open(target_filename, 'w', newline='') as outfile:
             writer = csv.writer(outfile)
 
-            # Write the header row to the output file
-            writer.writerow(header)
+            # Write the header of ID and the chosen variable to the output file
+            writer.writerow(['ID'] + varlist)
 
             # Loop through the input file
             for row in reader:
