@@ -101,7 +101,7 @@ def split_var(file, target_filename, varlist): #Zhangir
 """ Split file by observation. Take a variable to look under and a list of 
 observations, and copy all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found.  """
-"""to-do: delete duplicate column"""
+
 def split_obs(file, target_filename, target_var, obs): # Zhangir
     # Open input file and output file
     with open(file, 'r') as f_in, open(target_filename, 'w', newline='') as f_out:
@@ -114,7 +114,7 @@ def split_obs(file, target_filename, target_var, obs): # Zhangir
         # Loop through rows and write to output file
         for row in reader:
             if row[target_col] in obs:
-                writer.writerow([row[0], row[target_col]] + row[1:])
+                writer.writerow([row[0:])
 
 """ Append a list of observations from csv to an existing file, target_filename"""
 def append(file, target_filename, obs): #Zhangir
