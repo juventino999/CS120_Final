@@ -109,7 +109,7 @@ def split_obs(file, target_filename, target_var, obs): # Zhangir
         writer = csv.writer(f_out)
         header = next(reader)  # read header
         target_col = header.index(target_var)  # get index of target variable column
-        writer.writerow([header[0], target_var] + header[1:])  # write header row
+        writer.writerow([header[0:])  # write header row
 
         # Loop through rows and write to output file
         for row in reader:
