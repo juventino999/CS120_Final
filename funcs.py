@@ -165,18 +165,20 @@ def delete_duplicates(file):
         writer = csv.writer(f)
         for row in unique_rows:
             writer.writerow(row)
-""" to-do: fix TypeError"""
+
 def sort_csv(file, sort_column):
     with open(file, 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
         rows = list(reader)
-    sorted_rows = sorted(rows, key=lambda x: x[sort_column])
+    # Find the index of the sort column by searching for its name in the header row
+    sort_index = header.index(sort_column)
+    sorted_rows = sorted(rows, key=lambda x: x[sort_index])
     sorted_rows.insert(0, header)
     with open(file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(sorted_rows)
-
+                                 
 def rename_var(file):
     pass
 
