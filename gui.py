@@ -1,16 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Wed Apr 19 11:29:30 2023
-
-@author: juventino1112
-
 Instructions:
     - import CSV file using the button
     - Type desired observations/variables to manipulate in text box on button of GUI and press "Gather arguments"
     - Click a button to execute a function from funcs.py using the arguments gathered
     - Save the CSV file using the button
-
 """
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
@@ -18,25 +11,24 @@ from funcs import Sheet
 import funcs
 import tkinter.scrolledtext as st
 from tkinter import ttk
-import pandas as pd
 
 
 class Window():
 
     def __init__(self):
 
-        # Set up tkinter
+#%% Set up tkinter
         self.window = Tk()
         self.window.title("CSV Editor")
         self.window.geometry('1000x800')
         
-        # Set up window grid
+# Set up window grid
         self.window.rowconfigure(0, weight=5)
         self.window.rowconfigure(1, weight=1)
         self.window.columnconfigure(0, weight=1) 
         self.window.columnconfigure(1, weight=20)
 
-        # Define what to show on the left (menu)
+#%% Define what to show on the left (menu)
         frame_menu = Frame(self.window, relief=RAISED, bd=2)
         frame_menu.grid(row=0, column=0, rowspan=1, sticky='WENS')
 # buttons
@@ -59,32 +51,35 @@ class Window():
         btn_delete_obs_multi = Button(frame_menu, text="Del obs matching multiple vars", command=lambda: self.func_button(self.activeSheet.delete_obs_by_var_multi))
         btn_delete_obs_multi.grid(row=5, column=0, sticky="WE", padx=5, pady=5)
         
-        btn_quit = Button(frame_menu, text="Exit", command=self.program_exit)
-        btn_quit.grid(row=10, column=0, sticky="WE", padx=5, pady=5)
         
         btn_sort = Button(frame_menu, text="CSV: Sort", command=lambda: funcs.sort_csv(self.use_filename, self.var_args))
         btn_sort.grid(row=6, column=0, sticky="WE", padx=5, pady=5)
         
-        btn_sort = Button(frame_menu, text="CSV: Split by variable", command=lambda: funcs.split_var(self.use_filename, self.target_filename, self.var_args))
-        btn_sort.grid(row=7, column=0, sticky="WE", padx=5, pady=5)
+        btn_split_by_var = Button(frame_menu, text="CSV: Split by variable", command=lambda: funcs.split_var(self.use_filename, self.target_filename, self.var_args))
+        btn_split_by_var.grid(row=7, column=0, sticky="WE", padx=5, pady=5)
         
-        btn_sort = Button(frame_menu, text="CSV: Split by observation", command=lambda: funcs.split_obs(self.use_filename, self.target_filename, self.var_args, self.obs_args))
-        btn_sort.grid(row=8, column=0, sticky="WE", padx=5, pady=5)
+        btn_split_by_obs = Button(frame_menu, text="CSV: Split by observation", command=lambda: funcs.split_obs(self.use_filename, self.target_filename, self.var_args, self.obs_args))
+        btn_split_by_obs.grid(row=8, column=0, sticky="WE", padx=5, pady=5)
         
-        btn_sort = Button(frame_menu, text="CSV: Delete duplicates", command=lambda: funcs.delete_duplicates(self.use_filename))
-        btn_sort.grid(row=9, column=0, sticky="WE", padx=5, pady=5)
+        btn_del_dupes = Button(frame_menu, text="CSV: Delete duplicates", command=lambda: funcs.delete_duplicates(self.use_filename))
+        btn_del_dupes.grid(row=9, column=0, sticky="WE", padx=5, pady=5)
         
-        # Define what to show on the right (the dataframe - top)
+        btn_del_dupes = Button(frame_menu, text="CSV: Append", command=lambda: funcs.append(self.use_filename, self.target_filename, self.append_filename))
+        btn_del_dupes.grid(row=10, column=0, sticky="WE", padx=5, pady=5)
+        
+        btn_quit = Button(frame_menu, text="Exit", command=self.program_exit)
+        btn_quit.grid(row=11, column=0, sticky="WE", padx=5, pady=5)
+#%% Define what to show on the right (the dataframe - top)
         frame_csv = Frame(self.window, bg="SILVER")
         frame_csv.grid(row=0, column=1, rowspan=1, sticky='WENS')
 
         xscrollbar = ttk.Scrollbar(frame_csv, orient='horizontal')
         xscrollbar.pack(side='bottom', fill='x')
 
-        # Create a vertical scrollbar and attach it to the frame
+ # Create a vertical scrollbar and attach it to the frame
         yscrollbar = ttk.Scrollbar(frame_csv, orient='vertical')
         yscrollbar.pack(side='right', fill='y')
-        # table
+# Create scrolledtext that gets df printed to it
         self.table = st.ScrolledText(frame_csv, wrap=NONE, xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
         self.table.pack(side='left', fill='both', expand=True)
         
@@ -93,7 +88,7 @@ class Window():
         # Configure the vertical scrollbar to work with the table
         yscrollbar.configure(command=self.table.yview)
 
-        # Define what to show on the right (the input - bottom)
+#%% Define what to show on the right (the input - bottom)
         frame_input = Frame(self.window)
         frame_input.grid(row=1,column=1, sticky='WENS')
         frame_input.columnconfigure(0, weight=1)
@@ -111,7 +106,7 @@ class Window():
         # Submit button
         btn_submit = Button(left_boxes, text="Gather arguments", command=self.gather_args).grid(row=4, column=0, sticky='W')
 
-        # Get user input for row, col and value
+ # Get user input for row, col and value
         self.var_input = Entry(left_boxes)
         self.var_input.grid(row=0, column=1, sticky='W')
 
@@ -124,6 +119,9 @@ class Window():
         
         self.file_input_button = ttk.Button(frame_input, text="Target file name", command=self.targetfilename)
         self.file_input_button.grid(row=3, column=0, sticky='W')
+        
+        self.file_input_button = ttk.Button(frame_input, text="File to append from", command=self.appendfilename)
+        self.file_input_button.grid(row=4, column=0, sticky='W')
 
         # Display error/success messages
         self.inputtxt = Label(right_boxes, height=5, width=50, bg="WHITE")
@@ -131,6 +129,8 @@ class Window():
         
         # Run the app
         self.window.mainloop()
+
+#%% Methods
 #clear table, then add dataframe to it
     def refresh(self, Sheet):
         self.table.config(state=NORMAL)
@@ -154,18 +154,12 @@ class Window():
     def saveasfile(self):
         target_filename = asksaveasfilename(filetypes=[("CSV", "*.csv")])
         Sheet.save_df_to_csv(self.activeSheet, target_filename)
-# =============================================================================
-# no longer used, using self.func_button() instead
-#     def delete_var_button(self):
-#         self.activeSheet.delete_var(self.var_args)
-#         self.refresh(self.activeSheet)
-# =============================================================================
+
 #generic button function: takes a function from Sheet class, runs it with var_args and obs_args, and then refreshes
     def func_button(self, function):
         function(self.var_args, self.obs_args)
         self.refresh(self.activeSheet)
     # take obs and vars as lists. comma with no space as separator
-    #to-do: add error processing, spit out an error on inputtxt if the input isnt a var/obs, print "success" if successful
     def gather_args(self): # delete obs by var not working for integer obs
         # Valid input
         self.obs_args = []
@@ -189,5 +183,8 @@ class Window():
         self.use_filename = askopenfilename(filetypes=[("CSV", "*.csv")])
     def targetfilename(self):
         self.target_filename = asksaveasfilename(filetypes=[("CSV", "*.csv")])
-
-win = Window()
+    def appendfilename(self):
+        self.append_filename = askopenfilename(filetypes=[("CSV", "*.csv")])
+# %% open the GUI
+if __name__ == '__main__':
+    win = Window()

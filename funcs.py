@@ -1,22 +1,12 @@
-"""
-Created on Fri Apr 14 10:33:28 2023
-
-@author: juventino1112
-TO-DO:
-    - Finish missing functions
-    - Change CSV-based to df-based
-"""
-#import numpy as np
 import pandas as pd
 import csv
 
 """ Change to class structure instead? Would probably be easier, can update with methods instead of having to call functions
 #class Sheet(): # change out filename for self and make them all methods"""
 
-class Sheet:
+class Sheet: # Nick
     def __init__(self, filename):
         self.df = pd.read_csv(filename)
-        #self.df.applymap(str) #think this part is unnecessary, have to test further
         
     def __repr__(self):
         return(self.df.to_string())
@@ -73,7 +63,7 @@ class Sheet:
         
 """ Split file by variable. Take a list of variables and copy those variables 
 into a separate CSV file"""
-"""to-do: delete unused variable names, remove row[0] from line 115"""
+
 def split_var(file, target_filename, varlist): #Zhangir
     # Open the input file for reading
     with open(file, 'r') as infile:
@@ -141,9 +131,9 @@ def append(file, target_filename, obs): #Zhangir
 
 
 
-""" Delete duplicate observations """
+""" Delete duplicate observations (first obs)"""
 
-def delete_duplicates(file):
+def delete_duplicates(file): # Zhangir
     with open(file, 'r') as f:
         reader = csv.reader(f)
         header = next(reader) 
@@ -158,7 +148,7 @@ def delete_duplicates(file):
         writer.writerow(header)
         writer.writerows(rows) 
         
-def sort_csv(file, sort_column):
+def sort_csv(file, sort_column): #Zhangir
     sort_column = sort_column[0]
     with open(file, 'r') as f:
         reader = csv.reader(f)
