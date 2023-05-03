@@ -88,7 +88,7 @@ def split_var(file, target_filename, varlist): #Zhangir
             writer = csv.writer(outfile)
 
             # Write the header of ID and the chosen variable to the output file
-            writer.writerow(['ID'] + varlist)
+            writer.writerow(varlist)
 
             # Loop through the input file
             for row in reader:
@@ -96,25 +96,26 @@ def split_var(file, target_filename, varlist): #Zhangir
                 move_vars = [row[i] for i in move_indices]
 
                 # Write the ID and variables to move and copy to the output file
-                writer.writerow([row[0]] + move_vars)
+                writer.writerow(move_vars)
 
 """ Split file by observation. Take a variable to look under and a list of 
 observations, and copy all rows containing the observations in the list to a new file. 
 Make sure to avoid crashing the whole program if the obs in list aren't found.  """
 
 def split_obs(file, target_filename, target_var, obs): # Zhangir
+    target_var = target_var[0]
     # Open input file and output file
     with open(file, 'r') as f_in, open(target_filename, 'w', newline='') as f_out:
         reader = csv.reader(f_in)
         writer = csv.writer(f_out)
         header = next(reader)  # read header
         target_col = header.index(target_var)  # get index of target variable column
-        writer.writerow([header[0:])  # write header row
+        writer.writerow(header[0:])  # write header row
 
         # Loop through rows and write to output file
         for row in reader:
             if row[target_col] in obs:
-                writer.writerow([row[0:])
+                writer.writerow(row[0:])
 
 """ Append a list of observations from csv to an existing file, target_filename"""
 def append(file, target_filename, obs): #Zhangir
@@ -155,15 +156,10 @@ def delete_duplicates(file):
     with open(file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        writer.writerows(rows)
-
-
-    with open('{}_unique.csv'.format(file.split('.csv')[0]), 'w', newline='') as f:
-        writer = csv.writer(f)
-        for row in unique_rows:
-            writer.writerow(row)
-
+        writer.writerows(rows) 
+        
 def sort_csv(file, sort_column):
+    sort_column = sort_column[0]
     with open(file, 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
@@ -181,8 +177,7 @@ def sort_csv(file, sort_column):
         writer = csv.writer(f)
         writer.writerows(sorted_rows)
                                  
-def rename_var(file):
-    pass
+                                 
 
 if __name__ == '__main__': # does not execute this part if importing from another file
     pass
