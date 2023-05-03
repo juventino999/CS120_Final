@@ -60,7 +60,19 @@ class Window():
         btn_delete_obs_multi.grid(row=5, column=0, sticky="WE", padx=5, pady=5)
         
         btn_quit = Button(frame_menu, text="Exit", command=self.program_exit)
-        btn_quit.grid(row=6, column=0, sticky="WE", padx=5, pady=5)
+        btn_quit.grid(row=10, column=0, sticky="WE", padx=5, pady=5)
+        
+        btn_sort = Button(frame_menu, text="CSV: Sort", command=lambda: funcs.sort_csv(self.use_filename, self.var_args))
+        btn_sort.grid(row=6, column=0, sticky="WE", padx=5, pady=5)
+        
+        btn_sort = Button(frame_menu, text="CSV: Split by variable", command=lambda: funcs.split_var(self.use_filename, self.target_filename, self.var_args))
+        btn_sort.grid(row=7, column=0, sticky="WE", padx=5, pady=5)
+        
+        btn_sort = Button(frame_menu, text="CSV: Split by observation", command=lambda: funcs.split_obs(self.use_filename, self.target_filename, self.var_args, self.obs_args))
+        btn_sort.grid(row=8, column=0, sticky="WE", padx=5, pady=5)
+        
+        btn_sort = Button(frame_menu, text="CSV: Delete duplicates", command=lambda: funcs.delete_duplicates(self.use_filename))
+        btn_sort.grid(row=9, column=0, sticky="WE", padx=5, pady=5)
         
         # Define what to show on the right (the dataframe - top)
         frame_csv = Frame(self.window, bg="SILVER")
@@ -94,6 +106,7 @@ class Window():
 
         row_txt = Label(left_boxes, text = "Variables").grid(row = 0,column = 0, sticky='W')
         col_txt = Label(left_boxes, text = "Observations").grid(row = 1,column = 0, sticky='W')
+
         
         # Submit button
         btn_submit = Button(left_boxes, text="Gather arguments", command=self.gather_args).grid(row=4, column=0, sticky='W')
@@ -104,6 +117,13 @@ class Window():
 
         self.obs_input = Entry(left_boxes)
         self.obs_input.grid(row=1, column=1, sticky='W')
+        
+        
+        self.file_input_button = ttk.Button(frame_input, text="Use file name", command=self.findfilename)
+        self.file_input_button.grid(row=2, column=0, sticky='W')
+        
+        self.file_input_button = ttk.Button(frame_input, text="Target file name", command=self.targetfilename)
+        self.file_input_button.grid(row=3, column=0, sticky='W')
 
         # Display error/success messages
         self.inputtxt = Label(right_boxes, height=5, width=50, bg="WHITE")
@@ -165,6 +185,9 @@ class Window():
     def func_obs(self):
         self.activeSheet.delete_obs([], self.obs_args)
         self.refresh(self.activeSheet)        
-
+    def findfilename(self):
+        self.use_filename = askopenfilename(filetypes=[("CSV", "*.csv")])
+    def targetfilename(self):
+        self.target_filename = asksaveasfilename(filetypes=[("CSV", "*.csv")])
 
 win = Window()
