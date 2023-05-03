@@ -1,8 +1,10 @@
 import pandas as pd
 import csv
+"""
+Created on Fri Apr 14 10:33:28 2023
 
-""" Change to class structure instead? Would probably be easier, can update with methods instead of having to call functions
-#class Sheet(): # change out filename for self and make them all methods"""
+@author: Nick Panetta and Zhangir Zhangir Kozhakhmetov
+"""
 
 class Sheet: # Nick
     def __init__(self, filename):

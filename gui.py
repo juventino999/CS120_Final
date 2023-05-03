@@ -1,9 +1,14 @@
 """
+Created on Wed Apr 19 11:29:30 2023
+
+@author: juventino1112
+
 Instructions:
     - import CSV file using the button
     - Type desired observations/variables to manipulate in text box on button of GUI and press "Gather arguments"
     - Click a button to execute a function from funcs.py using the arguments gathered
     - Save the CSV file using the button
+
 """
 from tkinter import *
 from tkinter.filedialog import askopenfilename, asksaveasfilename
