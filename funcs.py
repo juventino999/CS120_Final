@@ -143,23 +143,20 @@ def append(file, target_filename, obs): #Zhangir
 """ Delete duplicate observations """
 
 def delete_duplicates(file):
-    unique_rows = []
     with open(file, 'r') as f:
         reader = csv.reader(f)
-        header = next(reader)
-        unique_rows.append(header)
+        header = next(reader) 
+        id_set = set()
+        rows = []
         for row in reader:
-            is_duplicate = False
-            for prev_row in unique_rows:
-                if row == prev_row:
-                    is_duplicate = True
-                    break
-                elif row[0] == prev_row[0]:
-                    is_duplicate = True
-                    unique_rows.remove(prev_row)
-                    break
-            if not is_duplicate:
-                unique_rows.append(row)
+            if row[0] not in id_set:
+                id_set.add(row[0])
+                rows.append(row)
+    with open(file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        writer.writerows(rows)
+
 
     with open('{}_unique.csv'.format(file.split('.csv')[0]), 'w', newline='') as f:
         writer = csv.writer(f)
